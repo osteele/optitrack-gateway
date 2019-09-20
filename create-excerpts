@@ -1,0 +1,8 @@
+#!/usr/bin/env bash -eu
+
+# Create truncated copies of the csv files in the data directory.
+
+cd data
+for file in *.csv; do
+    head -50 "$file" > "${file/.csv/-excerpt.csv}"
+done
