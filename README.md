@@ -7,10 +7,6 @@ via a websocket connection.
 
 `pipenv install`
 
-(This doesn't currently work because pipenv doesn't play well with pandas or
-numpy. Instead, `pipenv shell` and then `pip install` each of the packages
-listed in `Pipfile`.)
-
 ## Create CSV Files
 
 Place the OptiTrack CSV files in `./data` (or create a symbolic link from
