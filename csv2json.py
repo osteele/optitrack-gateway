@@ -8,9 +8,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm, trange
 
-json_dir = Path("build")
-
-EXCERPTS = False
+BUILD_PATH = Path("build")
 
 # from https://gist.github.com/cbwar/d2dfbc19b140bd599daccbe0fe925597
 def sizeof_fmt(num, suffix="B"):
@@ -67,7 +65,8 @@ def convert_file(csv_path, print_bones=False):
         ]
         poses.append({"score": 1, "keypoints": keypoints})
 
-    json_path = (json_dir / csv_path.name).with_suffix(".json")
+    BUILD_PATH.mkdir(exist_ok=True)
+    json_path = (BUILD_PATH / csv_path.name).with_suffix(".json")
     with json_path.open("w") as f:
         json.dump(poses, f)
     print(f"  -> {json_path} ({sizeof_fmt(json_path.stat().st_size)} bytes)")

@@ -47,10 +47,8 @@ Use the following command to convert this file to JSON:
 
 `pipenv run create-csv FILE_OR_DIR...`
 
-This creates `*.json` files in `./build`, from the *.csv files at
-`FILE_OR_DIRNAME`.
-
-If `FILE_OR_DIRNAME` is a path, it converts a single file.
+If `FILE_OR_DIRNAME` is a CSV file, it creats a `*.json` file in the
+`./build` directory.
 
 If `FILE_OR_DIRNAME` is a directory, all *.csv files *directly* inside that
 directory (but not files inside directories in that directory) are converted.
