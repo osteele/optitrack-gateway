@@ -63,8 +63,8 @@ Prints the bone names.
 
 `pipenv run server [JSON_PATH]`
 
-This serves data from `JSON_PATH`. If this file is absent, the first `*.json`
-file in `./build` is used.
+This serves data from `JSON_PATH` on WebSocket port 8765. It can be accessed
+from a client running on the same machine, at `ws://localhost:8765`.
 
 ## References
 

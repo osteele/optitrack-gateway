@@ -1,0 +1,12 @@
+[
+    {
+        "files": [
+            "*"
+        ],
+        "rigging": [
+            "Hip -> Ab -> Chest -> Neck -> Head",
+            "Chest -> [LR]Shoulder -> [LR]UArm -> [LR]FArm -> [LR]Hand",
+            "Hip -> [LR]Thigh -> [LR]Shin -> [LR]Foot -> [LR]Toe"
+        ]
+    }
+]
