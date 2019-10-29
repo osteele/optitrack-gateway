@@ -5,6 +5,7 @@ verify_ssl = true
 
 [scripts]
 create-csv = "python csv2json.py"
+print-bones = "python csv2json.py --print-bones"
 server = "python server.py"
 
 [dev-packages]

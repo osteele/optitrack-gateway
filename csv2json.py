@@ -27,27 +27,27 @@ def multi_index_labels(index):
     return [{l[i] for l in index} for i in range(len(index[0]))]
 
 
-def convert_file(csv_path, print_bones=True):
-    print(f"File: {csv_path.name} ({sizeof_fmt(csv_path.stat().st_size)} bytes):")
+def convert_file(csv_path, print_bones=False):
     df = pd.read_csv(
         csv_path,
         header=[0, 1, 3, 4],
         index_col=0,
         skiprows=2,
-        nrows=100 if print_bones else None,
+        nrows=10 if print_bones else None,
     )
-    dfd = df.dropna(1, how="all")
-    # print(multi_index_labels(df.columns)[0], "->", multi_index_labels(dfd.columns)[0])
-    print(f"  {len(df.columns)} -> {len(dfd.columns)} columns")
-    print(f"  {len(df)} rows")
     if print_bones:
         bones = {
             col[1].split(":", 2)[1]
             for col in df.columns
             if col[0] == "Bone" and col[2] == "Position"
         }
-        print("Bones =", sorted(bones))
+        print("Bones =", " ".join(sorted(bones)))
         return
+
+    dfd = df.dropna(1, how="all")
+    # print(multi_index_labels(df.columns)[0], "->", multi_index_labels(dfd.columns)[0])
+    print(f"  {len(df.columns)} -> {len(dfd.columns)} columns")
+    print(f"  {len(df)} rows")
 
     poses = []
 
@@ -95,12 +95,13 @@ def convert_all(file_or_dir, excerpts, print_bones):
                 key=lambda f: f.stat().st_size,
             )
 
-            for csv_path in csv_paths:
-                convert_file(csv_path, **options)
+            for path in csv_paths:
+                print(f"File: {path} ({sizeof_fmt(path.stat().st_size)} bytes):")
+                convert_file(path, **options)
         elif path.suffix == ".csv":
             convert_file(path, **options)
         else:
-            ctx.fail("Unknown file type: ", path)
+            ctx.fail(f"Unknown file type: {path}")
 
 
 if __name__ == "__main__":
