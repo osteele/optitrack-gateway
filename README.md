@@ -9,12 +9,15 @@ via a websocket connection.
 
 ## Create CSV Files
 
-Place the OptiTrack CSV files in `./data` (or create a symbolic link from
-`/.data` to their location).
+`pipenv run create-csv [FILE_OR_DIRNAME]`
 
-`pipenv run create-csv`
+This creates `*.json` files in `./build`, from the *.csv file at
+`FILE_OR_DIRNAME`.
 
-This creates `*.json` files in `./build`.
+`FILE_OR_DIRNAME` also defaults to `build`. This works because the input and
+output file extensions are different.
+
+`pipenv run create-csv [FILE_OR_DIRNAME]` prints the bone names.
 
 ## Server data
 

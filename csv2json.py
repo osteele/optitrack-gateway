@@ -1,6 +1,7 @@
 import json
 import math
 import os
+import sys
 from pathlib import Path
 
 import click
@@ -27,14 +28,27 @@ def multi_index_labels(index):
     return [{l[i] for l in index} for i in range(len(index[0]))]
 
 
-def convert_file(csv_path):
+def convert_file(csv_path, print_bones=True):
     print(f"File: {csv_path.name} ({sizeof_fmt(csv_path.stat().st_size)} bytes):")
-    df = pd.read_csv(csv_path, header=[0, 1, 3, 4], index_col=0, skiprows=2)
+    df = pd.read_csv(
+        csv_path,
+        header=[0, 1, 3, 4],
+        index_col=0,
+        skiprows=2,
+        nrows=100 if print_bones else None,
+    )
     dfd = df.dropna(1, how="all")
-    # print(multi_index_labels(df.columns)[
-    #     0], '->', multi_index_labels(dfd.columns)[0])
+    # print(multi_index_labels(df.columns)[0], "->", multi_index_labels(dfd.columns)[0])
     print(f"  {len(df.columns)} -> {len(dfd.columns)} columns")
     print(f"  {len(df)} rows")
+    if print_bones:
+        bones = {
+            col[1].split(":", 2)[1]
+            for col in df.columns
+            if col[0] == "Bone" and col[2] == "Position"
+        }
+        print("Bones =", sorted(bones))
+        return
 
     poses = []
 
@@ -61,24 +75,30 @@ def convert_file(csv_path):
 
 
 @click.command()
+@click.option(
+    "--excerpts", is_flag=True, help="Process the *--excerpt files in FILE_OR_DIR"
+)
+@click.option(
+    "--print-bones", is_flag=True, help="Print the bone names instead of creating JSON"
+)
 @click.argument("FILE_OR_DIR", nargs=1, default="build", required=False)
-def convert_all(file_or_dir):
+def convert_all(file_or_dir, excerpts, print_bones):
+    options = dict(print_bones=print_bones)
     path = Path(file_or_dir)
     if path.is_dir():
-        csv_paths = [
-            p
-            for p in sorted(path.glob("*.csv"), key=lambda f: f.stat().st_size)
-            if "-excerpt" not in p.name
-        ]
-        if EXCERPTS:
-            csv_paths = sorted(
-                path.glob("*-excerpt.csv"), key=lambda f: f.stat().st_size
-            )
+        csv_paths = sorted(
+            path.glob("*-excerpt.csv")
+            if excerpts
+            else [p for p in path.glob("*.csv") if "-excerpt" not in p.name],
+            key=lambda f: f.stat().st_size,
+        )
 
         for csv_path in csv_paths:
-            convert_file(csv_path)
+            convert_file(csv_path, **options)
+    elif path.suffix == ".csv":
+        convert_file(path, **options)
     else:
-        convert_file(path)
+        print("Unknown file type: ", path, file=sys.stderr.write)
 
 
 if __name__ == "__main__":
