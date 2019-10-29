@@ -9,15 +9,12 @@ via a websocket connection.
 
 ## Create CSV Files
 
-`pipenv run create-csv [FILE_OR_DIRNAME]`
+`pipenv run create-csv FILE_OR_DIR...`
 
-This creates `*.json` files in `./build`, from the *.csv file at
+This creates `*.json` files in `./build`, from the *.csv files at
 `FILE_OR_DIRNAME`.
 
-`FILE_OR_DIRNAME` also defaults to `build`. This works because the input and
-output file extensions are different.
-
-`pipenv run create-csv [FILE_OR_DIRNAME]` prints the bone names.
+`pipenv run create-csv FILE_OR_DIR...` prints the bone names.
 
 ## Server data
 

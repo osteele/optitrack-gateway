@@ -1,7 +1,6 @@
 import json
 import math
 import os
-import sys
 from pathlib import Path
 
 import click
@@ -81,24 +80,27 @@ def convert_file(csv_path, print_bones=True):
 @click.option(
     "--print-bones", is_flag=True, help="Print the bone names instead of creating JSON"
 )
-@click.argument("FILE_OR_DIR", nargs=1, default="build", required=False)
+@click.argument("FILE_OR_DIR", nargs=-1, type=click.Path(exists=True))
 def convert_all(file_or_dir, excerpts, print_bones):
+    ctx = click.get_current_context()
     options = dict(print_bones=print_bones)
-    path = Path(file_or_dir)
-    if path.is_dir():
-        csv_paths = sorted(
-            path.glob("*-excerpt.csv")
-            if excerpts
-            else [p for p in path.glob("*.csv") if "-excerpt" not in p.name],
-            key=lambda f: f.stat().st_size,
-        )
+    if not file_or_dir:
+        ctx.fail("Required at least one FILE_OR_DIR")
+    for path in map(Path, file_or_dir):
+        if path.is_dir():
+            csv_paths = sorted(
+                path.glob("*-excerpt.csv")
+                if excerpts
+                else [p for p in path.glob("*.csv") if "-excerpt" not in p.name],
+                key=lambda f: f.stat().st_size,
+            )
 
-        for csv_path in csv_paths:
-            convert_file(csv_path, **options)
-    elif path.suffix == ".csv":
-        convert_file(path, **options)
-    else:
-        print("Unknown file type: ", path, file=sys.stderr.write)
+            for csv_path in csv_paths:
+                convert_file(csv_path, **options)
+        elif path.suffix == ".csv":
+            convert_file(path, **options)
+        else:
+            ctx.fail("Unknown file type: ", path)
 
 
 if __name__ == "__main__":
