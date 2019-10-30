@@ -12,12 +12,6 @@ import click
 import websockets
 from websockets.exceptions import ConnectionClosedError
 
-data_dir = Path("./build")
-data_paths = sorted(
-    p for p in data_dir.glob("Izzy*.json") if not p.stem.endswith("-excerpt")
-)
-data_path = data_paths[0]
-
 
 def load_bones(path):
     """Return a list of pairs of joints to use as bones."""
